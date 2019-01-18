@@ -1,0 +1,22 @@
+<phpunit bootstrap="bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         convertDeprecationsToExceptions="true"
+         forceCoversAnnotation="false"
+         mapTestClassNameToCoveredClassName="false"
+         processIsolation="false"
+         stopOnError="true"
+         stopOnFailure="true"
+         stopOnWarning="true"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         >
+    <php>
+        <const name="TESTS_IN_PROGRESS" value="1"/>
+    </php>
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener"/>
+    </listeners>
+</phpunit>
