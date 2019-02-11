@@ -56,7 +56,7 @@ class IdsRenameController
                     $birt = $matches[1];
                     $this->err->write("= <comment>{$birt}</comment> ", false, OutputInterface::VERBOSITY_DEBUG);
                 } elseif (preg_match(
-                    '/^(?:FORM|ABT|BEF|AFT|BET|EST|CAL|INT) (?:[0-9]{1,2} (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) )?([0-9]{4})( |$)/',
+                    '/^(?:FROM|ABT|BEF|AFT|BET|EST|CAL|INT) (?:[0-9]{1,2} (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) )?([0-9]{4})( |$)/',
                     $birt,
                     $matches
                 )) {
@@ -170,7 +170,7 @@ class IdsRenameController
                 $marr = $matches[1];
                 $this->err->write("= <comment>{$marr}</comment> ", false, OutputInterface::VERBOSITY_DEBUG);
             } elseif (preg_match(
-                '/^(?:FORM|ABT|BEF|AFT|BET|EST|CAL|INT) (?:(?:[0-9]{1,2})? (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) )?([0-9]{4})( |$)/',
+                '/^(?:FROM|ABT|BEF|AFT|BET|EST|CAL|INT) (?:(?:[0-9]{1,2})? (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) )?([0-9]{4})( |$)/',
                 $marr,
                 $matches
             )) {

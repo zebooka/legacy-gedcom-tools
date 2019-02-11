@@ -4,6 +4,8 @@ namespace Zebooka\Gedcom;
 
 class Gedcom5Document
 {
+    const DATE_REGEXP = '/^(?:(?:FROM|ABT|BEF|AFT|BET|EST|CAL|INT)\s+)?(?:([0-9]{1,2})\s+(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+)?([0-9]{4})( |$)/';
+
     /** @var \DOMDocument */
     public $dom;
 
@@ -110,5 +112,17 @@ class Gedcom5Document
             $parentNode = $parentNode->parentNode;
         }
         return "{$element->getNodePath()}:\n" . Gedcom5Document::composeLinesFromElement($element, $level) . "\n\n";
+    }
+
+    public static function gedcomDateToTimestamp($gedcomDateString)
+    {
+        if (preg_match(self::DATE_REGEXP, $gedcomDateString, $matches)) {
+            $matches[2] = str_replace(explode('|', 'JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC'), explode('|', '1|2|3|4|5|6|7|8|9|10|11|12'), $matches[2]);
+            $matches[2] = $matches[2] ? $matches[2] : '1';
+            $matches[1] = $matches[1] ? $matches[1] : '1';
+            return strtotime("{$matches[3]}-{$matches[2]}-{$matches[1]}");
+        } else {
+            return strtotime($gedcomDateString);
+        }
     }
 }
