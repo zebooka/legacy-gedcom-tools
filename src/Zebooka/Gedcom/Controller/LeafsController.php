@@ -5,7 +5,6 @@ namespace Zebooka\Gedcom\Controller;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zebooka\Gedcom\Gedcom5Document;
-use Zebooka\Gedcom\Graph\Node;
 
 class LeafsController
 {
@@ -40,23 +39,31 @@ class LeafsController
 
     private function checkIsLeaf(\DOMElement $indi, Gedcom5Document $gedcom)
     {
+        $id = $indi->getAttribute('id');
+
         // not dead
         $notDead = !$gedcom->xpath('./DEAT', $indi)->count();
 
         // less than 30 years since birth
-        $youngerThat30 = false;
-        $birt = $gedcom->evaluate('string(./BIRT/DATE/@value)', $indi);
-        if ($birt) {
+        $youngerThan30 = false;
+        if ($birt = $gedcom->evaluate('string(./BIRT/DATE/@value)', $indi)) {
             $timestamp = strtotime('+ 30 years', Gedcom5Document::gedcomDateToTimestamp($birt));
-            $youngerThat30 = $timestamp > time();
+            $youngerThan30 = $timestamp > time();
         }
 
         // no children
-        $noChildren = 1;
-        $fams = '' . $gedcom->evaluate('string(./FAMS/@value)', $indi);
-        $noChildren = $fams === '';
+        $noChildren = true;
+        $fams = $gedcom->xpath("/GEDCOM/FAM[HUSB/@value='{$id}']|/GEDCOM/FAM[WIFE/@value='{$id}']");
+        if ($fams) {
+            foreach ($fams as $fam) {
+                if ($gedcom->xpath('./CHIL', $fam)->count()) {
+                    $noChildren = false;
+                    break;
+                }
+            }
+        }
 
-        return $notDead && $youngerThat30 && $noChildren;
+        return $notDead && $youngerThan30 && $noChildren;
     }
 
     private function calculateRanking(\DOMElement $indi, Gedcom5Document $gedcom)

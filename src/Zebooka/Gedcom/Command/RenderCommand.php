@@ -8,7 +8,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 class RenderCommand extends AbstractCommand
 {
-    const ARGUMENT_FORMAT = 'format';
+    const OPTION_FORMAT = 'format';
+
     protected static $defaultName = 'render';
 
     protected function configure()
@@ -17,6 +18,6 @@ class RenderCommand extends AbstractCommand
         $this->setDescription('Render GEDCOM')
             ->setHelp('Render GEDCOM file uzing Graphviz tool to PNG/SVG/DOT format.');
 
-        $this->addOption(self::ARGUMENT_FORMAT, 'o', InputOption::VALUE_REQUIRED, 'Output format', 'png');
+        $this->addOption(self::OPTION_FORMAT, 'o', InputOption::VALUE_REQUIRED, 'Output format', 'png');
     }
 }

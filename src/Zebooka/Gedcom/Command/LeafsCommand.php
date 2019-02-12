@@ -12,6 +12,8 @@ use Zebooka\Gedcom\Controller\LeafsController;
 
 class LeafsCommand extends AbstractCommand
 {
+    const OPTION_REVERSE = 'reverse';
+
     protected static $defaultName = 'leafs';
 
     protected function configure()
@@ -19,6 +21,8 @@ class LeafsCommand extends AbstractCommand
         parent::configure();
         $this->setDescription('Display leafs')
             ->setHelp('Search and display leafs from GEDCOM suitable for rendering tree. Leafs are ending descendants on family tree.');
+
+        $this->addOption(self::OPTION_REVERSE, 'r', InputOption::VALUE_NONE, 'Reverse order of leafs (first with higher ranking, least with lower).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -31,6 +35,12 @@ class LeafsCommand extends AbstractCommand
         $c = new LeafsController($output);
         $leafs = $c->gedcomToLeafs($gedcom);
         $end = end($leafs);
+
+        if ($input->getOption(self::OPTION_REVERSE)) {
+            $leafs = array_reverse($leafs, true);
+            $err->writeln("--> <fg=red>Output in reverse order</>", OutputInterface::VERBOSITY_VERY_VERBOSE);
+        }
+
         $rankingLength = strlen('' . number_format($end[0], $rankingPrecision));
 
         foreach ($leafs as $id => $leaf) {
@@ -53,8 +63,5 @@ class LeafsCommand extends AbstractCommand
                 $output->writeln("<fg={$highlight}>--></> <fg=cyan>{$id}</> <fg=default>-- {$name}</> <fg=green>-- {$dates}</>", OutputInterface::VERBOSITY_NORMAL);
             }
         }
-
-//        $err->writeln("--> Optimizing GEDCOM", OutputInterface::VERBOSITY_NORMAL);
-
     }
 }

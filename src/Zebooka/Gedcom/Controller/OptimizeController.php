@@ -29,7 +29,7 @@ class OptimizeController
         $this->err->writeln(self::elementXPath($element), OutputInterface::VERBOSITY_VERY_VERBOSE);
 
         $this->err->writeln(
-            '<comment>'.Gedcom5Document::composeLinesFromElementWithRoot($element).'</comment>',
+            '<comment>' . Gedcom5Document::composeLinesFromElementWithRoot($element) . '</comment>',
             OutputInterface::VERBOSITY_DEBUG
         );
     }
@@ -75,6 +75,28 @@ class OptimizeController
             /** @var \DOMElement $element */
             $this->debugElement($element);
             $element->parentNode->removeChild($element);
+        }
+    }
+
+    public function fixSpaceAroundFamilyName(Gedcom5Document $gedcom)
+    {
+        $this->err->writeln('--> Fix spaces around family name', OutputInterface::VERBOSITY_VERBOSE);
+        $elements = $gedcom->xpath('//NAME');
+        foreach ($elements as $element) {
+            /** @var \DOMElement $element */
+
+            $old = $element->getAttribute('value');
+            $parts = array_map('trim', explode('/', $old));
+            if (3 == count($parts)) {
+                $new = trim("{$parts[0]} /{$parts[1]}/ {$parts[2]}");
+            } else {
+                $new = $old;
+            }
+
+            if ($new !== $old) {
+                $element->setAttribute('value', $new);
+                $this->debugElement($element);
+            }
         }
     }
 }
