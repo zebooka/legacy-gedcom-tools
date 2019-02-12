@@ -15,4 +15,4 @@ install:
 	./build-phar.php
 
 try:
-	./build/gedcom-tools.phar -h
+	./build/gedcom-tools.phar
